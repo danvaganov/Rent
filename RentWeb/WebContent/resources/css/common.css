@@ -1,0 +1,37 @@
+.ui-widget {
+    font-size: 80%;
+}
+.ui-datatable-header
+{
+	text-align: right !important;
+}
+.ui-datatable-footer
+{
+	text-align: left !important;
+}
+.ui_button_column
+{
+	padding: 0px !important;
+ 	width: 16px;
+}
+.ui-datatable table {
+    table-layout: auto !important;
+}
+.ui_highlight_row
+{
+	background: #FFFF00;
+}
+.ui-column-filter
+{
+	width: 80% !important;
+}
+.ui-panelgrid tr, .ui-panelgrid td
+{
+  border:none !important;
+}
+.writeoff-contract
+{
+	background-color: #fca752 !important;
+    background-image: none !important;
+    color: #000000 !important;
+}

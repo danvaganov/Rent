@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<h:form id="reportTableForm">
+<!-- 		<p:dataTable value="#{reportBean.statistic}" id="statisticTable" var="statistic"> -->
+
+<!-- 			<p:column headerText="Номер"> -->
+<!-- 				<h:outputText value="#{statistic.year}" /> -->
+<!-- 			</p:column> -->
+
+<!-- 			<p:column headerText="Наименование"> -->
+<!-- 				<h:outputText value="#{statistic.count}" /> -->
+<!-- 			</p:column> -->
+			
+<!-- 		</p:dataTable> -->
+		
+		<p:chart type="bar" model="#{reportBean.barChartModel}" style="height:300px" />
+	</h:form>
+</ui:composition>

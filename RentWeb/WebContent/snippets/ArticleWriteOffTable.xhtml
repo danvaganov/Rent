@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="articleTableForm">
+		<p:dataTable value="#{articleWriteOffBean}" id="articleWriteOffTable" var="article" rows="10" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15,100" paginatorPosition="bottom" selection="#{articleBean.selection}" lazy="true" selectionMode="single">
+			<p:ajax event="rowSelect" oncomplete="PF('articleDialog').show()" update=":articleDialogForm" />
+
+			<p:column style="width:16px">
+				<p:rowToggler />
+			</p:column>
+
+			<p:rowExpansion rendered="#{not empty article.contractArticles}">
+				<h:outputLabel for="numberContract" value="Номер договора: " />
+				<h:outputText id="numberContract" value="#{article.contractArticles.get(article.contractArticles.size() - 1).contract.numberContract}" style="font-weight:bold"/>
+				<br />
+				<h:outputLabel for="createContract" value="Дата создания: " />
+				<h:outputText id="createContract" value="#{article.contractArticles.get(article.contractArticles.size() - 1).contract.createContract}" style="font-weight:bold">
+					<f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+				</h:outputText>
+				<br />
+				<h:outputLabel for="fioPerson" value="Клиент: " />
+				<h:outputText id="fioPerson" value="#{article.contractArticles.get(article.contractArticles.size() - 1).contract.person}" style="font-weight:bold"/>
+			</p:rowExpansion>
+
+			<p:column headerText="Номер" filterBy="#{article.inventoryNumberArticle}" filterMatchMode="contains" width="10%">
+				<h:outputText value="#{article.inventoryNumberArticle}" />
+			</p:column>
+
+			<p:column headerText="Наименование" filterBy="#{article.nameArticle}" filterMatchMode="contains">
+				<h:outputText value="#{article.nameArticle}" />
+			</p:column>
+
+			<p:column headerText="Стоимость" filterBy="#{article.costArticle}" filterMatchMode="contains" width="5%">
+				<h:outputText value="#{article.costArticle}" />
+			</p:column>
+
+			<p:column headerText="Срок эксплуатации" filterBy="#{article.lifetimeArticle}" filterMatchMode="contains">
+				<h:outputText value="#{article.lifetimeArticle}" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+	<ui:include src="/snippets/dialogs/ArticleDialog.xhtml" />
+</ui:composition>

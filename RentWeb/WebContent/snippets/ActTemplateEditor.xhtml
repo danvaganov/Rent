@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<h:form id="templateEditorForm">
+		<h:panelGrid columns="1" style="width:100%;height:300px">
+			<p:editor id="editor" widgetVar="editorWidget" value="#{loginBean.tUser.employee.organization.actTemplateOrganization}" style="width:100%" />
+			<p:commandButton actionListener="#{organizationBean.update(loginBean.tUser.employee.organization)}" update="@none" process="@form" value="Сохранить"></p:commandButton>
+		</h:panelGrid>
+		<p:dataTable value="#{templateController.param}" var="field">
+			<p:column>
+				<h:outputText value="#{field}" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</ui:composition>

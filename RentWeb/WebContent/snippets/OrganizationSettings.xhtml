@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<h:form id="organizationSettingsForm">
+		<p:panel header="Сведения об организации">
+			<p:messages />
+			<h:panelGrid columns="2" columnClasses="label, value">
+				<h:outputText value="Наименование:" />
+				<p:inputText id="nameOrganization" value="#{loginBean.tUser.employee.organization.nameOrganization}" required="true" label="Серия пасспорта" size="100" />
+
+				<h:outputText value="Полное наименование:" />
+				<p:inputTextarea id="fullNameOrganization" rows="2" cols="100" value="#{loginBean.tUser.employee.organization.fullNameOrganization}" required="true" label="Полное наименование организации" />
+
+				<h:outputText value="Населенный пункт:" />
+				<p:inputText id="localityOrganization" value="#{loginBean.tUser.employee.organization.localityOrganization}" required="true" label="Населенный пункт" size="100" />
+
+				<h:outputText value="Адрес организации:" />
+				<p:inputTextarea id="addressOrganization" rows="2" cols="100" value="#{loginBean.tUser.employee.organization.addressOrganization}" required="true" label="Адрес организации" />
+
+				<h:outputText value="Директор:" />
+				<p:inputText id="directorOrganization" value="#{loginBean.tUser.employee.organization.directorOrganization}" required="true" label="Директор учреждения" size="100" />
+			</h:panelGrid>
+			<p:outputPanel style="text-align:right;padding:2px;">
+				<p:commandButton actionListener="#{organizationBean.update(loginBean.tUser.employee.organization)}" value="Сохранить" />
+			</p:outputPanel>
+		</p:panel>
+	</h:form>
+</ui:composition>

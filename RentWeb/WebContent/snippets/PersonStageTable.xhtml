@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<h:form id="personStageForm">
+		<p:dataTable value="#{personStageController}" id="personStageTable" var="personStage" rows="10" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" selectionMode="single" selection="#{personStageController.selection}" lazy="true">
+			<p:ajax event="rowSelect" update="@form:personStageDatail" oncomplete="PF('personStageDialog').show()"/>
+			
+			<f:facet name="header" style="text-align:right;">
+		         <p:commandButton value="New" actionListener="#{personController.prepareInsert}" oncomplete="personStageDialog.show()" update="@form:personStageDatail"/>
+		     </f:facet>
+		     
+			<p:column headerText="Имя">
+				<h:outputText value="#{personStage.stage.nameStage}" />
+			</p:column>
+		</p:dataTable>
+		
+		<p:dialog header="Сотрудник" widgetVar="personStageDialog" showEffect="fade" hideEffect="fade" resizable="false">
+			<p:panelGrid id="personStageDatail" columns="2" columnClasses="label, value">
+				<h:outputText value="Имя:" />
+				<p:inputText id="name" value="#{personStageController.selection.stage.nameStage}" />
+				<p:outputLabel for="stage" value="City: " />
+	            <p:selectOneMenu rendered="#{not empty personStageController.selection}" id="stage" value="#{personStageController.stage}" style="width:350px">
+	                <f:selectItems value="#{stageController.findAll()}" var="s" itemValue="#{s.keyStage}" itemLabel="#{s.nameStage}"/>
+	            </p:selectOneMenu>
+			</p:panelGrid>
+			
+			<p:outputPanel style="text-align:right;padding:2px;">
+				<p:commandButton process="@form" actionListener="#{personStageController.updatePersonStage}" value="Ok" oncomplete="PF('personStageDialog').hide()" update="@form:personStageTable"/>
+				<p:commandButton value="Cancel" onclick="PF('personStageDialog').hide()" process="@none"/>
+			</p:outputPanel>
+		</p:dialog>
+	</h:form>
+</ui:composition>
+

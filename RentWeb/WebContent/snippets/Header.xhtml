@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+	<p:panelGrid style="width:100%">
+		<p:row>
+			<p:column style="width:5%">
+				<h:graphicImage library="img" name="wheelchair.png" width="70" style="float:left;"></h:graphicImage>
+			</p:column>
+			<p:column style="width:75%">
+				<h1>Пункт Проката</h1>
+			</p:column>
+			<p:column style="width:20%">
+				<h:form>
+					<p:outputLabel value="#{loginBean.tUser.employee.organization}"></p:outputLabel>
+					<br />
+					<p:outputLabel value="#{loginBean.tUser.employee}"></p:outputLabel>
+					<br />
+					<p:commandLink value="Настройки" update=":content" actionListener="#{mainBean.setContent('/snippets/OrganizationSettings.xhtml')}" />&#160;
+					<p:commandLink value="Выход" action="#{loginBean.logout()}" ajax="false" />&#160;
+					<a href="resources/pdf/manual.pdf" target="_blank">Справка</a>
+				</h:form>
+			</p:column>
+		</p:row>
+	</p:panelGrid>
+</ui:composition>

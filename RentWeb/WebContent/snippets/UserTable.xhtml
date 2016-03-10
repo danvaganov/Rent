@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<h:form id="userTableForm">
+		<p:dataTable value="#{userBean}" id="userTable" var="user" rows="10" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15,100" paginatorPosition="bottom" selection="#{userBean.selection}" lazy="true" selectionMode="single">
+			<p:ajax event="rowSelect" oncomplete="PF('userDialog').show()" update=":userDialogForm" />
+
+			<p:column headerText="Пользователь" filterBy="#{user.userIDTUser}" filterMatchMode="contains">
+				<h:outputText value="#{user.userIDTUser}" />
+			</p:column>
+
+			<p:column headerText="Пароль" filterBy="#{user.passwordTUser}" filterMatchMode="contains">
+				<h:outputText value="#{user.passwordTUser}" />
+			</p:column>
+
+			<p:column headerText="Имя" filterBy="#{user.employee.nameEmployee}" filterMatchMode="contains">
+				<h:outputText value="#{user.employee.nameEmployee}" />
+			</p:column>
+
+			<p:column headerText="Фамилия" filterBy="#{user.employee.surnameEmployee}" filterMatchMode="contains">
+				<h:outputText value="#{user.employee.surnameEmployee}" />
+			</p:column>
+
+			<p:column headerText="Отчество" filterBy="#{user.employee.patronymicEmployee}" filterMatchMode="contains">
+				<h:outputText value="#{user.employee.patronymicEmployee}" />
+			</p:column>
+
+			<p:column styleClass="ui_button_column">
+				<p:commandButton icon="ui-icon-trash" title="Удалить" actionListener="#{userBean.deleteTUser(user)}" update=":userTableForm :navigationFrom" />
+			</p:column>
+
+			<f:facet name="footer" style="text-align:right;">
+				<p:commandButton value="Добавить новый пункт" actionListener="#{userBean.prepareInsert()}" oncomplete="PF('userDialog').show()" update=":userDialogForm" />
+			</f:facet>
+		</p:dataTable>
+	</h:form>
+
+	<p:dialog header="Клиент" widgetVar="userDialog" showEffect="fade" hideEffect="fade" resizable="false">
+		<h:form id="userDialogForm">
+			<p:panelGrid rendered="#{userBean.selection != null}">
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Имя:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="namePerson" value="#{userBean.selection.userIDTUser}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Фамилия:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="surname" value="#{userBean.selection.passwordTUser}" />
+					</p:column>
+				</p:row>
+
+			</p:panelGrid>
+
+			<p:outputPanel style="text-align:right;padding:2px;">
+				<p:commandButton actionListener="#{userBean.updateTUser}" value="Ok" oncomplete="PF('userDialog').hide()" update=":userTableForm" />
+				<p:commandButton value="Cancel" onclick="PF('userDialog').hide()" process="@none" />
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</ui:composition>

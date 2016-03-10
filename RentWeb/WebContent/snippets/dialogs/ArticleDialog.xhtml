@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<p:dialog header="Пункт" widgetVar="articleDialog" showEffect="fade" hideEffect="fade" resizable="false">
+		<h:form id="articleDialogForm">
+			<p:panelGrid rendered="#{articleBean.selection != null}">
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Инвентарный номер:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="inventoryNumberArticle" value="#{articleBean.selection.inventoryNumberArticle}" size="10" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Наименование:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="nameArticle" value="#{articleBean.selection.nameArticle}" size="100" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Стоимость:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="costArticle" value="#{articleBean.selection.costArticle}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Установлена на дату:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:calendar id="costDateArticle" value="#{articleBean.selection.costDateArticle}" pattern="dd.MM.yyyy" showOn="button" mask="true" timeZone="UTC" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Срок аренды:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="lifetimeArticle" value="#{articleBean.selection.lifetimeArticle}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Статус:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:selectOneButton value="#{articleBean.selection.stateArticle}">
+							<f:selectItems value="#{articleBean.statuses}" var="status" itemLabel="#{status.label}" itemValue="#{status}" />
+						</p:selectOneButton>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+
+			<p:outputPanel style="text-align:right;padding:2px;">
+				<p:commandButton actionListener="#{articleBean.updateArticle(articleBean.selection)}" value="Ok" oncomplete="PF('articleDialog').hide()" update=":articleTableForm  :navigationFrom" />
+				<p:commandButton value="Cancel" onclick="PF('articleDialog').hide()" process="@none" />
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</ui:composition>
+
+

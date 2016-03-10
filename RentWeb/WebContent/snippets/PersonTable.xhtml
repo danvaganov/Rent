@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<h:form id="personTableForm">
+		<p:dataTable value="#{personBean}" id="personTable" var="person" rows="10" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15,100" paginatorPosition="bottom" selection="#{personBean.selection}" lazy="true" selectionMode="single">
+			<p:ajax event="rowSelect" oncomplete="PF('personDialog').show()" update=":personDialogForm" />
+
+			<p:column headerText="Имя" filterBy="#{person.namePerson}" filterMatchMode="contains">
+				<h:outputText value="#{person.namePerson}" />
+			</p:column>
+
+			<p:column headerText="Фамилия" filterBy="#{person.surnamePerson}" filterMatchMode="contains">
+				<h:outputText value="#{person.surnamePerson}" />
+			</p:column>
+
+			<p:column headerText="Отчество" filterBy="#{person.patronymicPerson}" filterMatchMode="contains">
+				<h:outputText value="#{person.patronymicPerson}" />
+			</p:column>
+
+			<p:column headerText="Дата рождения">
+				<h:outputText value="#{person.birthdayPerson}">
+					<f:convertDateTime pattern="dd.MM.yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column styleClass="ui_button_column">
+				<p:commandButton icon="ui-icon-trash" title="Удалить" actionListener="#{personBean.deletePerson(person)}" update=":personTableForm :navigationFrom" />
+			</p:column>
+
+			<f:facet name="footer" style="text-align:right;">
+				<p:commandButton value="Добавить новый пункт" actionListener="#{personBean.prepareInsert()}" oncomplete="PF('personDialog').show()" update=":personDialogForm" />
+			</f:facet>
+		</p:dataTable>
+	</h:form>
+
+	<p:dialog header="Клиент" widgetVar="personDialog" showEffect="fade" hideEffect="fade" resizable="false">
+		<h:form id="personDialogForm">
+			<p:panelGrid rendered="#{personBean.selection != null}">
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Имя:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="namePerson" value="#{personBean.selection.namePerson}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Фамилия:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="surname" value="#{personBean.selection.surnamePerson}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Отчество:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="patronymic" value="#{personBean.selection.patronymicPerson}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Дата рождения:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:calendar id="birthdayPerson" value="#{personBean.selection.birthdayPerson}" pattern="dd.MM.yyyy" showOn="button" mask="true" timeZone="UTC" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Почта:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputText id="email" value="#{personBean.selection.emailPerson}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Адрес фактического проживания:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:inputTextarea id="dwellingPerson" rows="2" cols="60" value="#{personBean.selection.dwellingPerson}" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+			<p:panel header="Паспортные данные">
+				<h:panelGrid columns="2" columnClasses="label, value">
+					<h:outputText value="Серия: *" />
+					<p:inputMask id="serialPassport" value="#{personBean.selection.passport.serialPassport}" required="false" label="Серия паспорта" mask="9999" size="4"/>
+
+					<h:outputText value="Номер: *" />
+					<p:inputMask id="numberPassport" value="#{personBean.selection.passport.numberPassport}" required="false" label="Номер паспорта" mask="999999" size="6"/>
+
+					<h:outputText value="Выдан: *" />
+					<p:inputTextarea id="issuePassport" rows="2" cols="60" value="#{personBean.selection.passport.issuePassport}" />
+
+					<h:outputText value="Дата выдачи: *" />
+					<p:calendar id="issueDatePassport" value="#{personBean.selection.passport.issueDatePassport}" pattern="dd.MM.yyyy" showOn="button" mask="true" timeZone="UTC" />
+
+					<h:outputText value="Регистрация: " />
+					<p:inputTextarea id="registrationPassport" rows="2" cols="60" value="#{personBean.selection.passport.registrationPassport}" />
+				</h:panelGrid>
+			</p:panel>
+			<p:outputPanel style="text-align:right;padding:2px;">
+				<p:commandButton actionListener="#{personBean.updatePerson}" value="Ok" oncomplete="PF('personDialog').hide()" update=":personTableForm" />
+				<p:commandButton value="Cancel" onclick="PF('personDialog').hide()" process="@none" />
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</ui:composition>

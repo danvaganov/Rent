@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<p:dialog header="Мастер создания договора" widgetVar="contractDialog" showEffect="fade" hideEffect="fade" resizable="false" height="450px">
+		<h:form id="contractDialogForm">
+			<p:wizard flowListener="#{contractBean.onFlowProcess}" widgetVar="contractDialogWizard" style="height:400px" nextLabel="Далее" backLabel="Назад">
+				<p:tab id="contractRequisites" title="Реквизиты договора">
+					<p:panel header="Реквизиты договора">
+						<p:messages />
+						<h:panelGrid columns="2" columnClasses="label, value">
+							<h:outputText value="Номер договора: *" />
+							<p:inputText id="numberContract" value="#{contractBean.selection.numberContract}" required="true" label="Номер договора" />
+
+							<h:outputText value="Дата создания: *" />
+							<p:calendar value="#{contractBean.selection.createContract}" pattern="dd.MM.yyyy" showOn="button" mask="true" timeZone="UTC" required="true" label="Дата создания"/>
+
+							<h:outputText value="Начало действия: *" />
+							<p:calendar value="#{contractBean.selection.beginContract}" pattern="dd.MM.yyyy" showOn="button" mask="true" timeZone="UTC" required="true" label="Начало действия"/>
+
+							<h:outputText value="Окончание действия: " />
+							<p:calendar value="#{contractBean.selection.endContract}" pattern="dd.MM.yyyy" showOn="button" mask="true" timeZone="UTC" label="Дата окончания"/>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="contractPerson" title="Клиент">
+					<p:panel header="Выбор клиента">
+						<p:messages />
+						<h:panelGrid columns="2" columnClasses="label, value">
+							<h:outputText value="Клиент: " />
+							<p:autoComplete dropdown="true" value="#{contractBean.selection.person}" var="p" itemValue="#{p}" itemLabel="#{p}" converter="#{personConverter}" completeMethod="#{personBean.complete}" size="60" required="true" label="Клиент" disabled="${contractBean.selection.stateContract != 'OPEN'}"/>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="contractArticle" title="Прокат">
+					<p:messages />
+					<p:dataTable id="contractArticleTable" value="#{contractBean.selection.contractArticles}" var="contractArticle" rowKey="#{contractArticle.keyContractArticle}">
+
+						<p:column headerText="Наименование">
+							<h:outputText value="#{contractArticle.article}" />
+						</p:column>
+
+						<p:column styleClass="ui_button_column" rendered="${contractBean.selection.stateContract == 'OPEN'}">
+							<p:commandButton icon="ui-icon-trash" title="Удалить" actionListener="#{contractBean.selection.removeContractArticle(contractArticle)}" update=":contractDialogForm:contractArticleTable"/>
+						</p:column>
+
+						<f:facet name="footer" style="text-align:right;">
+							<p:commandButton value="Добавить" actionListener="#{contractArticleBean.prepareInsert}" oncomplete="PF('contractArticleDialog').show()" update=":contractArticleDialogForm" rendered="${contractBean.selection.stateContract == 'OPEN'}"/>
+						</f:facet>
+					</p:dataTable>
+				</p:tab>
+
+				<p:tab id="contractConfirm" title="Подтверждение">
+					<p:panel header="Подтверждение">
+						<h:panelGrid id="confirmation" columns="1" columnClasses="grid" width="100%">
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<h:outputText value="Клиент: " />
+								<h:outputText value="#{contractBean.selection.person}" styleClass="outputLabel" style="font-weight:bold"/>
+
+								<h:outputText value="Дата заключения договора: " />
+								<h:outputText value="#{contractBean.selection.createContract}" styleClass="outputLabel" style="font-weight:bold">
+									<f:convertDateTime pattern="dd.MM.yyyy" />
+								</h:outputText>
+
+								<h:outputText value="Дата начала действия договора: " />
+								<h:outputText value="#{contractBean.selection.beginContract}" styleClass="outputLabel" style="font-weight:bold">
+									<f:convertDateTime pattern="dd.MM.yyyy" />
+								</h:outputText>
+
+								<h:outputText value="Дата окончания договора: " />
+								<h:outputText value="#{contractBean.selection.endContract}" styleClass="outputLabel" style="font-weight:bold">
+									<f:convertDateTime pattern="dd.MM.yyyy" />
+								</h:outputText>
+							</h:panelGrid>
+							<p:dataList value="#{contractBean.selection.contractArticles}" var="contractArticle">
+								<f:facet name="header">
+									<h:outputText value="Средства" />
+								</f:facet>
+								<h:outputText value="#{contractArticle.article}" style="display:inline-block" />
+							</p:dataList>
+							<p:selectOneButton value="#{contractBean.selection.stateContract}" disabled="true">
+								<f:selectItems value="#{contractBean.statuses}" var="status" itemLabel="#{status.label}" itemValue="#{status}"/>
+							</p:selectOneButton>
+						</h:panelGrid>
+
+						<p:outputPanel style="text-align:right;padding:2px;">
+							<p:commandButton actionListener="#{contractBean.update}" value="Сохранить" oncomplete="PF('contractDialog').hide()" update=":contractTableForm :navigationFrom" />
+						</p:outputPanel>
+					</p:panel>
+				</p:tab>
+			</p:wizard>
+			<p:outputPanel style="text-align:right;padding:2px;">
+				<p:commandButton value="Отменить" onclick="PF('contractDialog').hide()" process="@none" />
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+
+	<p:dialog header="Пункт" widgetVar="contractArticleDialog" showEffect="fade" hideEffect="fade" resizable="false" width="900px">
+		<h:form id="contractArticleDialogForm">
+			<p:panelGrid>
+				<p:row>
+					<p:column style="font-weight: bold;">
+						<h:outputText value="Наименование:" />
+					</p:column>
+					<p:column style="font-weight: bold;">
+						<p:autoComplete dropdown="true" value="#{contractArticleBean.selection.article}" var="a" itemValue="#{a}" itemLabel="#{a}" converter="#{articleConverter}" completeMethod="#{articleInStockBean.complete}" size="100" />
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+
+			<p:outputPanel style="text-align:right;padding:2px;">
+				<p:commandButton actionListener="#{contractArticleBean.update}" value="Ok" oncomplete="PF('contractArticleDialog').hide()" update=":contractDialogForm:contractArticleTable" />
+				<p:commandButton value="Cancel" onclick="PF('contractArticleDialog').hide()" process="@none" />
+			</p:outputPanel>
+		</h:form>
+	</p:dialog>
+</ui:composition>

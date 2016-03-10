@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<h:form id="articleTableForm">
+		<p:toolbar>
+			<f:facet name="left">
+				<p:commandButton value="Добавить новый" icon="ui-icon-document" actionListener="#{articleBean.prepareInsert()}" oncomplete="PF('articleDialog').show()" update=":articleDialogForm" />
+			</f:facet>
+		</p:toolbar>
+		<p:dataTable value="#{articleInStockBean}" id="articleInStockTable" var="article" rows="10" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15,100" paginatorPosition="bottom" selection="#{articleBean.selection}" lazy="true" selectionMode="single">
+			<p:ajax event="rowSelect" oncomplete="PF('articleDialog').show()" update=":articleDialogForm" />
+
+			<p:column headerText="Номер" filterBy="#{article.inventoryNumberArticle}" filterMatchMode="contains" width="10%">
+				<h:outputText value="#{article.inventoryNumberArticle}" />
+			</p:column>
+
+			<p:column headerText="Наименование" filterBy="#{article.nameArticle}" filterMatchMode="contains">
+				<h:outputText value="#{article.nameArticle}" />
+			</p:column>
+
+			<p:column headerText="Стоимость" filterBy="#{article.costArticle}" filterMatchMode="contains" width="5%">
+				<h:outputText value="#{article.costArticle}" />
+			</p:column>
+
+			<p:column headerText="Срок эксплуатации" filterBy="#{article.lifetimeArticle}" filterMatchMode="contains">
+				<h:outputText value="#{article.lifetimeArticle}" />
+			</p:column>
+
+			<p:column headerText="Рейтинг">
+				<p:rating value="#{article.rate}" readonly="true" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+	<ui:include src="/snippets/dialogs/ArticleDialog.xhtml" />
+</ui:composition>

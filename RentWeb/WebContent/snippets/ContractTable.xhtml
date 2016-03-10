@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="contractTableForm">
+		<p:growl id="growl" showDetail="true" />
+
+		<p:toolbar>
+			<f:facet name="left">
+				<p:commandButton value="Создать новый" icon="ui-icon-document" actionListener="#{contractBean.prepareInsert()}" oncomplete="PF('contractDialog').show(); PF('contractDialogWizard').loadStep('contractRequisites',true)" update=":contractDialogForm" />
+			</f:facet>
+		</p:toolbar>
+
+		<p:dataTable value="#{contractBean}" id="contractTable" widgetVar="contractTable" var="contract" rows="10" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="5,10,15,100" paginatorPosition="bottom" selection="#{contractBean.selection}" lazy="true" selectionMode="single" rowStyleClass="#{contract.stateContract == 'OUT_OF_DATE' ? 'writeoff-contract' : null}">
+			<p:ajax event="rowSelect" oncomplete="PF('contractDialog').show(); PF('contractDialogWizard').loadStep('contractRequisites',true)" update=":contractDialogForm" />
+			
+			<p:column style="width:16px">
+				<p:rowToggler />
+			</p:column>
+
+			<p:rowExpansion>
+				<h:outputLabel for="numberContract" value="Номер договора: " />
+				<h:outputText id="numberContract" value="#{contract.numberContract}" style="font-weight:bold" />
+				<br />
+				<h:outputLabel for="personContract" value="Клиент: " />
+				<h:outputText id="personContract" value="#{contract.person}" style="font-weight:bold" />
+				<br />
+				<p:dataList value="#{contract.contractArticles}" var="contractArticle">
+					<f:facet name="header">
+						<h:outputText value="Средства" />
+					</f:facet>
+					<h:outputText value="#{contractArticle.article}" style="display:inline-block" />
+				</p:dataList>
+				<br />
+				<p:outputPanel style=";padding:2px;" rendered="#{contract.stateContract == 'PROCESS' or contract.stateContract == 'OUT_OF_DATE'}">
+					<p:commandButton icon="ui-icon-circle-check" value="Закрыть договор" actionListener="#{contractBean.close(contract)}" update=":contractTableForm :navigationFrom" />
+					<p:calendar value="#{contract.closeContract}" pattern="dd.MM.yyyy" showOn="button" mask="true" timeZone="UTC" />
+				</p:outputPanel>
+				<p:outputPanel style="text-align:right;padding:2px;">
+					<p:commandButton value="Печать заявления" action="#{contractBean.showRequest(contract)}" process="@none" ajax="false" onclick="form.target='_blank'" />
+					<p:commandButton value="Печать договора" action="#{contractBean.showContract(contract)}" process="@none" ajax="false" onclick="form.target='_blank'" />
+					<p:commandButton value="Печать акт" action="#{contractBean.showContract(contract)}" process="@none" ajax="false" onclick="form.target='_blank'" />
+				</p:outputPanel>
+			</p:rowExpansion>
+
+			<p:column headerText="Номер" filterBy="#{contract.numberContract}" filterMatchMode="contains" width="5%">
+				<h:outputText value="#{contract.numberContract}" />
+			</p:column>
+
+			<p:column headerText="Дата создания">
+				<h:outputText value="#{contract.createContract}">
+					<f:convertDateTime pattern="dd.MM.yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Дата начала">
+				<h:outputText value="#{contract.beginContract}">
+					<f:convertDateTime pattern="dd.MM.yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Дата окончания">
+				<h:outputText value="#{contract.endContract}">
+					<f:convertDateTime pattern="dd.MM.yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Клиент">
+				<h:outputText value="#{contract.person}" />
+			</p:column>
+
+			<p:column filterBy="#{contract.stateContract}" filterMatchMode="equals">
+				<f:facet name="filter">
+					<p:selectOneButton onchange="PF('contractTable').filter()">
+						<f:converter converterId="contractStateConverter"></f:converter>
+						<f:selectItems value="#{contractBean.statuses}" var="status" itemLabel="#{status.label}" itemValue="#{status}" />
+					</p:selectOneButton>
+				</f:facet>
+				<h:outputText value="#{contract.stateContract.label}"></h:outputText>
+			</p:column>
+
+			<p:column styleClass="ui_button_column">
+				<p:commandButton icon="ui-icon-circle-check" title="Закрыть" actionListener="#{contractBean.close(contract)}" update=":contractTableForm :navigationFrom" />
+			</p:column>
+
+			<p:column styleClass="ui_button_column">
+				<p:commandButton icon="ui-icon-trash" title="Удалить" actionListener="#{contractBean.delete(contract)}" update=":contractTableForm :navigationFrom" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+	<ui:include src="/snippets/dialogs/ContractDialog.xhtml" />
+</ui:composition>

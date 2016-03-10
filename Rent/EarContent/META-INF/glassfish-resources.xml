@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+	<jdbc-connection-pool name="java:app/jdbc/RentPool"
+		res-type="javax.sql.DataSource" datasource-classname="org.postgresql.ds.PGSimpleDataSource" pool-resize-quantity="1" max-pool-size="5" steady-pool-size="0" statement-timeout-in-seconds="30">
+		<property name="User" value="postgres"></property>
+		<property name="Password" value="!Q12345"></property>
+		<property name="dataBaseName" value="Rent"></property>
+		<property name="serverName" value="192.168.23.55"></property>
+	</jdbc-connection-pool> 
+	<jdbc-resource pool-name="java:app/jdbc/RentPool" jndi-name="java:app/jdbc/Rent"></jdbc-resource>
+
+	<mail-resource debug="false" enabled="true"
+		from="danvaganov@gmail.com" host="smtp.gmail.com" jndi-name="mail/danvaganov"
+		object-type="user" store-protocol="imap" store-protocol-class="com.sun.mail.imap.IMAPStore"
+		transport-protocol="smtp" transport-protocol-class="com.sun.mail.smtp.SMTPTransport"
+		user="danvaganov@gmail.com">
+		<description>Configuring JavaMail Session Using glassfish-server.xml file</description>
+		<property name="mail-smtp-auth" value="true" />
+		<property name="mail-smtp-password" value="fkg7h4f3v6" />
+		<property name="mail-smtp-port" value="587" />
+		<property name="mail-smtp-starttls-enable" value="true" />
+	</mail-resource>
+
+</resources>
